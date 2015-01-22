@@ -1,3 +1,5 @@
+import sys
+
 import gdb
 
 
@@ -26,9 +28,11 @@ def handle_new_objfile(event):
 
     from gcc.matchers import MatchTree
     from gcc.printers import GDBPrettyPrinters
-    from gcc.tree import TreePrinter
+    from gcc.tree import TreePrinter, Tree
 
     MatchTree()
+    sys.modules['__main__'].Tree = Tree
+
     printers = GDBPrettyPrinters('gcc')
     printers.append(TreePrinter)
     objfile.pretty_printers.append(printers)
