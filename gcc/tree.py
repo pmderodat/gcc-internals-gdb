@@ -47,8 +47,20 @@ def primitive(*codes):
 
 
 class Tree(object):
+    """Python wrapper around `tree` values to ease data access."""
 
     def __init__(self, value):
+        """
+        Build a wrapper around a `tree` value.
+
+        `value` can be either a gdb.Value instance, a string (in which case it
+        is converted into a gdb.Value thanks to gdb.parse_and_eval) or an
+        integer (in which case it is casted into a tree).
+        """
+        if isinstance(value, basestring):
+            value = gdb.parse_and_eval(value)
+        elif isinstance(value, int):
+            value = gdb.Value(value).cast(gdb.lookup_type('tree'))
         self.value = value
 
     #
