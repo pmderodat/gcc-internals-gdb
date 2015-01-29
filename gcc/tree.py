@@ -105,21 +105,19 @@ class Tree(object):
         # Declaration nodes are supposed to have either no name or an
         # IDENTIFIER_NODE.
         if self.code_class == tree_code_class.tcc_declaration:
-            name = Tree(self.struct['decl_minimal']['name'])
-            if not name:
+            if not self.decl_name:
                 return None
-            return name.identifier_string
+            return self.decl_name.identifier_string
 
         # For their name, type nodes are allowed to have either no name, a
         # TYPE_DECL node or an IDENTIFIER_NODE.
         elif self.code_class == gdb.parse_and_eval('tcc_type'):
-            name = Tree(self.struct['type_common']['name'])
-            if not name:
+            if not self.type_name:
                 return None
-            elif name.code == tree_code.TYPE_DECL:
-                return name.name
+            elif self.type_name.code == tree_code.TYPE_DECL:
+                return self.type_name.decl_name.identifier_string
             else:
-                return name.identifier_string
+                return self.type_name.identifier_string
 
         else:
             raise ValueError('{} have no name'.format(self.code))
@@ -196,6 +194,18 @@ class Tree(object):
             Tree(self.struct['type_common']['main_variant']),
             lambda x: Tree(self.struct['type_common']['next_variant'])
         )
+
+    @property
+    @primitive(tree_code_class.tcc_type)
+    def type_name(self):
+        return Tree(self.struct['type_common']['name'])
+
+    # DECL'S
+
+    @property
+    @primitive(tree_code_class.tcc_declaration)
+    def decl_name(self):
+        return Tree(self.struct['decl_minimal']['name'])
 
     # Various helpers
 
