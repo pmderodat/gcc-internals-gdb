@@ -19,12 +19,23 @@ class Enum(object):
 
 tree_code_class = Enum(gdb.lookup_type('enum tree_code_class'))
 tree_code = Enum(gdb.lookup_type('enum tree_code'))
+tree_node_structure_enum = Enum(
+    gdb.lookup_type('enum tree_node_structure_enum')
+)
+tree_contains_struct = gdb.parse_and_eval('tree_contains_struct')
 
 
-def check_code_for_primitive(primitive, tree, tree_codes, tree_code_classes):
+def check_code_for_primitive(
+    primitive, tree,
+    tree_node_structures, tree_codes, tree_code_classes
+):
     if (
         tree.code not in tree_codes
         and tree.code_class not in tree_code_classes
+        and not any(
+            tree_contains_struct[tree.code][tree_node_structure]
+            for tree_node_structure in tree_node_structures
+        )
     ):
         raise ValueError('Invalid "{}" primitive for {}'.format(
             primitive.__name__,
@@ -37,10 +48,16 @@ def primitive(*codes):
     tree_code_classes = [
         c for c in codes if c.type == tree_code_class.gdb_type
     ]
+    tree_node_structures = [
+        c for c in codes if c.type == tree_node_structure_enum.gdb_type
+    ]
     def decorator(func):
         @wraps(func)
         def wrapper(self, *args, **kwargs):
-            check_code_for_primitive(func, self, tree_codes, tree_code_classes)
+            check_code_for_primitive(
+                func, self,
+                tree_node_structures, tree_codes, tree_code_classes
+            )
             return func(self, *args, **kwargs)
         return wrapper
     return decorator
@@ -121,6 +138,12 @@ class Tree(object):
 
         else:
             raise ValueError('{} have no name'.format(self.code))
+
+    # TODO: check the "typed?" predicate just like GCC does.
+    @property
+    @primitive(tree_node_structure_enum.TS_TYPED)
+    def type(self):
+        return Tree(self.struct['typed']['type'])
 
     @property
     @primitive(tree_code_class.tcc_declaration)
