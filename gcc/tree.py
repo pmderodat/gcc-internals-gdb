@@ -230,6 +230,11 @@ class Tree(object):
     def decl_name(self):
         return Tree(self.struct['decl_minimal']['name'])
 
+    @property
+    @primitive(tree_code.TYPE_DECL)
+    def decl_original_type(self):
+        return Tree(self.struct['decl_non_common']['result'])
+
     # Various helpers
 
     def chain_to_list(self, start, next_func):
