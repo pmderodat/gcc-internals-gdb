@@ -187,6 +187,16 @@ class Tree(object):
     def block_chain(self):
         return Tree(self.struct['block']['chain'])
 
+    # TYPE'S
+
+    @property
+    @primitive(tree_code_class.tcc_type)
+    def type_variants(self):
+        return self.chain_to_list(
+            Tree(self.struct['type_common']['main_variant']),
+            lambda x: Tree(self.struct['type_common']['next_variant'])
+        )
+
     # Various helpers
 
     def chain_to_list(self, start, next_func):
