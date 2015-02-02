@@ -250,6 +250,13 @@ class Tree(object):
     def decl_original_type(self):
         return Tree(self.struct['decl_non_common']['result'])
 
+    # FUNCTION_DECL
+
+    @property
+    @primitive(tree_code.FUNCTION_DECL)
+    def saved_tree(self):
+        return Tree(self.struct['decl_non_common']['saved_tree'])
+
     # Various helpers
 
     def chain_to_list(self, start, next_func):
