@@ -139,6 +139,16 @@ class Tree(object):
         else:
             raise ValueError('{} have no name'.format(self.code))
 
+    @property
+    @primitive(tree_code_class.tcc_type, tree_code_class.tcc_declaration)
+    def context(self):
+        if self.code_class == tree_code_class.tcc_type:
+            return Tree(self.struct['type_common']['context'])
+        elif self.code_class == tree_code_class.tcc_declaration:
+            return Tree(self.struct['decl_minimal']['context'])
+        else:
+            raise ValueError('{} have no context'.format(self.code))
+
     # TODO: check the "typed?" predicate just like GCC does.
     @property
     @primitive(tree_node_structure_enum.TS_TYPED)
