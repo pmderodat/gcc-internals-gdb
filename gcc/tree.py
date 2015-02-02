@@ -165,10 +165,13 @@ class Tree(object):
     def __repr__(self):
         if not self.value:
             return 'NULL_TREE'
-        try:
-            name = self.name
-        except ValueError:
-            name = None
+        if self.code == tree_code.IDENTIFIER_NODE:
+            name = self.identifier_string
+        else:
+            try:
+                name = self.name
+            except ValueError:
+                name = None
         return '<{} {}{}>'.format(
             str(self.code).lower(),
             hex(self.address),
