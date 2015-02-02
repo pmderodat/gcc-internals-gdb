@@ -54,6 +54,8 @@ def primitive(*codes):
     def decorator(func):
         @wraps(func)
         def wrapper(self, *args, **kwargs):
+            if not self.value:
+                raise ValueError('Trying to inspect NULL_TREE')
             check_code_for_primitive(
                 func, self,
                 tree_node_structures, tree_codes, tree_code_classes
