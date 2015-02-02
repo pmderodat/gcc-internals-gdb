@@ -260,18 +260,30 @@ class Tree(object):
     def saved_tree(self):
         return self.get_tree_field('decl_non_common', 'saved_tree')
 
+    # STATEMENT_LIST
+
+    @property
+    @primitive(tree_code.STATEMENT_LIST)
+    def statements(self):
+        return self.chain_to_list(
+            self.struct['stmt_list']['head'],
+            lambda x: x['next'],
+            lambda x: Tree(x['stmt'])
+        )
+
     # Various helpers
 
-    def chain_to_list(self, start, next_func):
+    def chain_to_list(self, start, next_func, get_elt_func=None):
         """
         Turn a chain of tree nodes into a list.
 
         Fetch the chain tarting at `start` and following links calling
-        next_func (`next = next_func(start)`).
+        next_func (`next = next_func(start)`). If `get_elt_func` is provided,
+        return elements are mapped with it.
         """
         result = []
         while start:
-            result.append(start)
+            result.append(get_elt_func(start) if get_elt_func else start)
             start = next_func(start)
         return result
 
