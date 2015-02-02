@@ -17,21 +17,23 @@ def setup():
 
 
 def handle_new_objfile(event):
-    global init_done
-    if init_done:
-        return
-    init_done = True
-    objfile = event.new_objfile
-
-    if objfile.filename.split('/')[-1] not in ('cc1', 'gnat1'):
-        return
-
     from gcc.matchers import MatchTree
     from gcc.printers import GDBPrettyPrinters
     from gcc.tree import TreePrinter, Tree
 
-    MatchTree()
-    sys.modules['__main__'].Tree = Tree
+    # Create new commands only once...
+    global init_done
+    if not init_done:
+        MatchTree()
+        sys.modules['__main__'].Tree = Tree
+        init_done = True
+
+    # ... and instanciate pretty-printers as many times as needed (once per
+    # matching objfile).
+
+    objfile = event.new_objfile
+    if objfile.filename.split('/')[-1] not in ('cc1', 'gnat1'):
+        return
 
     printers = GDBPrettyPrinters('gcc')
     printers.append(TreePrinter)
