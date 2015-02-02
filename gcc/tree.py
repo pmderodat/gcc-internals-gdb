@@ -93,6 +93,9 @@ class Tree(object):
     def struct(self):
         return self.value.dereference()
 
+    def get_tree_field(self, union_field, struct_field):
+        return Tree(self.struct[union_field][struct_field])
+
     @property
     def address(self):
         return int(self.value.cast(gdb.lookup_type('unsigned long long')))
@@ -145,9 +148,9 @@ class Tree(object):
     @primitive(tree_code_class.tcc_type, tree_code_class.tcc_declaration)
     def context(self):
         if self.code_class == tree_code_class.tcc_type:
-            return Tree(self.struct['type_common']['context'])
+            return self.get_tree_field('type_common', 'context')
         elif self.code_class == tree_code_class.tcc_declaration:
-            return Tree(self.struct['decl_minimal']['context'])
+            return self.get_tree_field('decl_minimal', 'context')
         else:
             raise ValueError('{} have no context'.format(self.code))
 
@@ -155,12 +158,12 @@ class Tree(object):
     @property
     @primitive(tree_node_structure_enum.TS_TYPED)
     def type(self):
-        return Tree(self.struct['typed']['type'])
+        return self.get_tree_field('typed', 'type')
 
     @property
     @primitive(tree_code_class.tcc_declaration)
     def chain(self):
-        return Tree(self.struct['common']['chain'])
+        return self.get_tree_field('common', 'chain')
 
     def __repr__(self):
         if not self.value:
@@ -201,7 +204,7 @@ class Tree(object):
     @primitive(tree_code.BLOCK)
     def block_vars(self):
         return self.chain_to_list(
-            Tree(self.struct['block']['vars']),
+            self.get_tree_field('block', 'vars'),
             lambda x: x.chain
         )
 
@@ -209,19 +212,19 @@ class Tree(object):
     @primitive(tree_code.BLOCK)
     def block_subblocks(self):
         return self.chain_to_list(
-            Tree(self.struct['block']['subblocks']),
+            self.get_tree_field('block', 'subblocks'),
             lambda x: x.block_chain
         )
 
     @property
     @primitive(tree_code.BLOCK)
     def block_superblock(self):
-        return Tree(self.struct['block']['supercontext'])
+        return self.get_tree_field('block', 'supercontext')
 
     @property
     @primitive(tree_code.BLOCK)
     def block_chain(self):
-        return Tree(self.struct['block']['chain'])
+        return self.get_tree_field('block', 'chain')
 
     # TYPE'S
 
@@ -229,33 +232,33 @@ class Tree(object):
     @primitive(tree_code_class.tcc_type)
     def type_variants(self):
         return self.chain_to_list(
-            Tree(self.struct['type_common']['main_variant']),
-            lambda x: Tree(self.struct['type_common']['next_variant'])
+            self.get_tree_field('type_common' ,'main_variant'),
+            lambda x: self.get_tree_field('type_common', 'next_variant')
         )
 
     @property
     @primitive(tree_code_class.tcc_type)
     def type_name(self):
-        return Tree(self.struct['type_common']['name'])
+        return self.get_tree_field('type_common', 'name')
 
     # DECL'S
 
     @property
     @primitive(tree_code_class.tcc_declaration)
     def decl_name(self):
-        return Tree(self.struct['decl_minimal']['name'])
+        return self.get_tree_field('decl_minimal', 'name')
 
     @property
     @primitive(tree_code.TYPE_DECL)
     def decl_original_type(self):
-        return Tree(self.struct['decl_non_common']['result'])
+        return self.get_tree_field('decl_non_common', 'result')
 
     # FUNCTION_DECL
 
     @property
     @primitive(tree_code.FUNCTION_DECL)
     def saved_tree(self):
-        return Tree(self.struct['decl_non_common']['saved_tree'])
+        return self.get_tree_field('decl_non_common', 'saved_tree')
 
     # Various helpers
 
