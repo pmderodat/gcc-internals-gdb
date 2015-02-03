@@ -241,6 +241,11 @@ class Tree(object):
     def type_name(self):
         return self.get_tree_field('type_common', 'name')
 
+    @property
+    @primitive(tree_code_class.tcc_type)
+    def type_stub_decl(self):
+        return self.get_tree_field('common', 'chain')
+
     # DECL'S
 
     @property
