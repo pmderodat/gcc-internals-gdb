@@ -17,6 +17,10 @@ def setup():
 
 
 def handle_new_objfile(event):
+    objfile = event.new_objfile
+    if objfile.filename.split('/')[-1] not in ('cc1', 'gnat1'):
+        return
+
     from gcc.matchers import MatchTree
     from gcc.printers import GDBPrettyPrinters
     from gcc.tree import TreePrinter, Tree
@@ -32,10 +36,6 @@ def handle_new_objfile(event):
 
     # ... and instanciate pretty-printers as many times as needed (once per
     # matching objfile).
-
-    objfile = event.new_objfile
-    if objfile.filename.split('/')[-1] not in ('cc1', 'gnat1'):
-        return
 
     printers = GDBPrettyPrinters('gcc')
     printers.append(TreePrinter)
