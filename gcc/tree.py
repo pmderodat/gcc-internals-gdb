@@ -246,13 +246,21 @@ class Tree(object):
     def type_stub_decl(self):
         return self.get_tree_field('common', 'chain')
 
-    @property
-    @primitive(tree_code.RECORD_TYPE, tree_code.UNION_TYPE)
-    def type_fields(self):
+    def _get_values_chain(self):
         return self.chain_to_list(
             self.get_tree_field('type_non_common', 'values'),
             lambda x: x.chain
         )
+
+    @property
+    @primitive(tree_code.RECORD_TYPE, tree_code.UNION_TYPE)
+    def type_fields(self):
+        return self._get_values_chain()
+
+    @property
+    @primitive(tree_code.FUNCTION_TYPE, tree_code.METHOD_TYPE)
+    def arg_types(self):
+        return self._get_values_chain()
 
     # DECL'S
 
