@@ -168,18 +168,33 @@ class Tree(object):
     def __repr__(self):
         if not self.value:
             return 'NULL_TREE'
-        if self.code == tree_code.IDENTIFIER_NODE:
-            name = self.identifier_string
-        else:
-            try:
-                name = self.name
-            except ValueError:
-                name = None
+
+        def get_suffix():
+            if self.code == tree_code.IDENTIFIER_NODE:
+                return self.identifier_string
+
+            try: return str(self.int_cst)
+            except: pass
+
+            try: return self.name
+            except ValueError: pass
+
+        suffix = get_suffix()
         return '<{} {}{}>'.format(
             str(self.code).lower(),
             hex(self.address),
-            ' ' + name if name else ''
+            ' ' + suffix if suffix else ''
         )
+
+    # INTEGER_CST
+
+    @property
+    @primitive(tree_code.INTEGER_CST)
+    def int_cst(self):
+        double_struct = self.struct['int_cst']['int_cst']
+        low = double_struct['low']
+        high = double_struct['high']
+        return int(high) << (8 * low.type.sizeof) | int(low)
 
     # BIND_EXPR
 
@@ -240,6 +255,16 @@ class Tree(object):
     @primitive(tree_code_class.tcc_type)
     def type_name(self):
         return self.get_tree_field('type_common', 'name')
+
+    @property
+    @primitive(tree_code_class.tcc_type)
+    def type_size(self):
+        return self.get_tree_field('type_common', 'size')
+
+    @property
+    @primitive(tree_code_class.tcc_type)
+    def type_size_unit(self):
+        return self.get_tree_field('type_common', 'size_unit')
 
     @property
     @primitive(tree_code_class.tcc_type)
