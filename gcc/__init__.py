@@ -18,7 +18,7 @@ def setup():
 
 def handle_new_objfile(event):
     objfile = event.new_objfile
-    if objfile.filename.split('/')[-1] not in ('cc1', 'gnat1'):
+    if objfile.filename.split('/')[-1] not in ('cc1', 'cc1plus', 'gnat1'):
         return
 
     from gcc.matchers import MatchTree
