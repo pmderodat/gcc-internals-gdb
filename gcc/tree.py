@@ -165,6 +165,16 @@ class Tree(object):
     def chain(self):
         return self.get_tree_field('common', 'chain')
 
+    @property
+    @primitive(tree_code.TREE_LIST)
+    def list_chain(self):
+        return self.get_tree_field('common', 'chain')
+
+    @property
+    @primitive(tree_code.TREE_LIST)
+    def list_value(self):
+        return self.get_tree_field('list', 'value')
+
     def __repr__(self):
         if not self.value:
             return 'NULL_TREE'
@@ -274,7 +284,8 @@ class Tree(object):
     def _get_values_chain(self):
         return self.chain_to_list(
             self.get_tree_field('type_non_common', 'values'),
-            lambda x: x.chain
+            lambda x: x.list_chain,
+            lambda x: x.list_value
         )
 
     @property
