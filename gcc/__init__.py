@@ -25,6 +25,7 @@ def handle_new_objfile(event):
 
     from gcc.matchers import MatchTree
     from gcc.printers import GDBPrettyPrinters
+    from gcc.tracers import LocationDescriptionTracer
     from gcc.tree import TreePrinter, Tree
     import gcc.utils
 
@@ -32,6 +33,7 @@ def handle_new_objfile(event):
     global init_done
     if not init_done:
         MatchTree()
+        LocationDescriptionTracer()
         sys.modules['__main__'].Tree = Tree
         sys.modules['__main__'].fmt_list = gcc.utils.fmt_list
         init_done = True
