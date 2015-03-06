@@ -36,7 +36,7 @@ class Tracer(object):
         self.set_enabling_state(False)
 
     def is_frame_of_interest(self, frame):
-        func_name = frame.function().name
+        func_name = frame.name()
         for point in self.points_of_interest:
             if point in func_name:
                 return True
