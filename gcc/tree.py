@@ -306,6 +306,16 @@ class Tree(object):
     def arg_types(self):
         return self._get_values_chain()
 
+    @property
+    @primitive(tree_code.RECORD_TYPE,
+               tree_code.UNION_TYPE,
+               tree_code.QUAL_UNION_TYPE)
+    def type_methods(self):
+        return self.chain_to_list(
+            self.get_tree_field('type_non_common', 'maxval'),
+            lambda x: x.chain
+        )
+
     # DECL'S
 
     @property
