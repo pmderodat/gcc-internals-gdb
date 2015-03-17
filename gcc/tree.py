@@ -166,6 +166,11 @@ class Tree(object):
         return self.get_tree_field('common', 'chain')
 
     @property
+    @primitive(tree_code_class.tcc_declaration)
+    def decl_to_chain_list(self):
+        return self.chain_to_list(self, lambda x: x.chain)
+
+    @property
     @primitive(tree_code.TREE_LIST)
     def list_chain(self):
         return self.get_tree_field('common', 'chain')
