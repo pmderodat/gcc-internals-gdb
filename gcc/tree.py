@@ -291,7 +291,10 @@ class Tree(object):
     @property
     @primitive(tree_code.RECORD_TYPE, tree_code.UNION_TYPE)
     def type_fields(self):
-        return self._get_values_chain()
+        return self.chain_to_list(
+            self.get_tree_field('type_non_common', 'values'),
+            lambda x: x.chain
+        )
 
     @property
     @primitive(tree_code.FUNCTION_TYPE, tree_code.METHOD_TYPE)
