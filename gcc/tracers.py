@@ -20,7 +20,7 @@ class Tracer(object):
 
     def add_breakpoint(self, spec, expr=None):
         bp = LocationDescriptionBreakpoint(spec, self, expr)
-        bp.enable = self.enabled
+        bp.enabled = self.enabled
         self.points_of_interest.append(spec)
         self.breakpoints.append(bp)
 
