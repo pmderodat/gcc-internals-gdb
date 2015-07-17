@@ -23,6 +23,7 @@ def handle_new_objfile(event):
     ):
         return
 
+    from gcc.commands import Pregset
     from gcc.matchers import MatchTree
     from gcc.printers import GDBPrettyPrinters
     from gcc.tracers import LocationDescriptionTracer
@@ -32,6 +33,7 @@ def handle_new_objfile(event):
     # Create new commands only once...
     global init_done
     if not init_done:
+        Pregset()
         MatchTree()
         LocationDescriptionTracer()
         sys.modules['__main__'].Tree = Tree
