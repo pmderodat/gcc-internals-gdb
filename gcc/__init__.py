@@ -23,6 +23,7 @@ def handle_new_objfile(event):
     ):
         return
 
+    from gcc.cfg import BasicBlock, BasicBlockPrinter, Edge, EdgePrinter
     from gcc.commands import Pregset
     from gcc.matchers import MatchTree
     from gcc.printers import GDBPrettyPrinters
@@ -44,5 +45,7 @@ def handle_new_objfile(event):
     # matching objfile).
 
     printers = GDBPrettyPrinters('gcc')
+    printers.append(BasicBlockPrinter)
+    printers.append(EdgePrinter)
     printers.append(TreePrinter)
     objfile.pretty_printers.append(printers)
