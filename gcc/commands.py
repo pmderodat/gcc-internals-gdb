@@ -17,10 +17,12 @@ class Pregset(gdb.Command):
         if val.type.name == 'bitmap_head':
             val = val.address
         if (val.type.code != gdb.TYPE_CODE_PTR or
-                val.type.target().code != gdb.TYPE_CODE_STRUCT or
+                val.type.target().code not in (gdb.TYPE_CODE_TYPEDEF,
+                                               gdb.TYPE_CODE_STRUCT) or
                 val.type.target().name != 'bitmap_head'):
             gdb.write('Invalid type: {} (bitmap expected)'.format(
                 str(val.type)))
+            return
         self.inferior_printer(
             gdb.parse_and_eval('stderr'),
             val
