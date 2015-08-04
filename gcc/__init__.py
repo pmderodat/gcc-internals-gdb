@@ -26,7 +26,7 @@ def handle_new_objfile(event):
     from gcc.cfg import BasicBlock, BasicBlockPrinter, Edge, EdgePrinter
     from gcc.commands import Pregset
     from gcc.matchers import MatchTree
-    from gcc.printers import GDBPrettyPrinters
+    from gcc.printers import GDBPrettyPrinters, LocationPrinter
     from gcc.tracers import LocationDescriptionTracer
     from gcc.tree import TreePrinter, Tree
     import gcc.utils
@@ -47,5 +47,6 @@ def handle_new_objfile(event):
     printers = GDBPrettyPrinters('gcc')
     printers.append(BasicBlockPrinter)
     printers.append(EdgePrinter)
+    printers.append(LocationPrinter)
     printers.append(TreePrinter)
     objfile.pretty_printers.append(printers)

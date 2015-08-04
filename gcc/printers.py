@@ -25,3 +25,20 @@ class GDBPrettyPrinters(gdb.printing.PrettyPrinter):
             if printer.enabled and printer.matches(val):
                 return printer.instantiate(val)
         return None
+
+
+class LocationPrinter(object):
+    name = 'location_t'
+
+    def __init__(self, value):
+        self.value = value
+
+    def to_string(self):
+        expanded = gdb.parse_and_eval(
+            'expand_location({})'.format(int(self.value))
+        )
+        return '{}:{}:{}'.format(
+            expanded['file'].string() if expanded['file'] else '???',
+            expanded['line'],
+            expanded['column']
+        )
