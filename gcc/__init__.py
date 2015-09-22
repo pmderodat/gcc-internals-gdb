@@ -23,6 +23,7 @@ def handle_new_objfile(event):
     ):
         return
 
+    import gcc.cfg
     from gcc.cfg import BasicBlock, BasicBlockPrinter, Edge, EdgePrinter
     from gcc.commands import Pregset
     import gcc.ira
@@ -51,6 +52,7 @@ def handle_new_objfile(event):
         for w in value_wrappers:
             setattr(sys.modules['__main__'], w.__name__, w)
         sys.modules['__main__'].fmt_list = gcc.utils.fmt_list
+        sys.modules['__main__'].cfg = gcc.cfg
         sys.modules['__main__'].ira = gcc.ira
         init_done = True
 

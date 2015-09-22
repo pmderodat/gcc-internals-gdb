@@ -1,3 +1,6 @@
+import os.path
+import subprocess
+
 import gdb
 import gdb.types
 
@@ -20,9 +23,31 @@ class BasicBlock(object):
 
         self.value = value
 
+    def _edge_vec_to_list(self, vec):
+        if not vec:
+            return []
+        return [
+            Edge(vec['m_vecdata'][i])
+            for i in range(int(vec['m_vecpfx']['m_num']))
+        ]
+
+    @property
+    def preds(self):
+        return self._edge_vec_to_list(self.value['preds'])
+
+    @property
+    def succs(self):
+        return self._edge_vec_to_list(self.value['succs'])
+
     @property
     def index(self):
         return int(self.value['index'])
+
+    def __hash__(self):
+        return hash(ptr_to_int(self.value))
+
+    def __eq__(self, other):
+        return self.value == other.value
 
     def __repr__(self):
         addr = ptr_to_int(self.value)
@@ -129,3 +154,34 @@ class EdgePrinter(object):
 
     def to_string(self):
         return str(Edge(self.value))
+
+
+def dump_dot(filename):
+    lines = ['digraph cfg {']
+    visited = set()
+
+    def add_bb(bb):
+        if bb in visited:
+            return
+        visited.add(bb)
+
+        lines.append('bb_{index} [shape=box, label="BB {index}"];'.format(
+            index=bb.index
+        ))
+        for edge in bb.succs:
+            succ = edge.destination
+            lines.append('bb_{} -> bb_{};'.format(
+                bb.index, succ.index
+            ))
+            add_bb(succ)
+
+    entry_bb = BasicBlock(gdb.parse_and_eval('cfun.cfg.x_entry_block_ptr'))
+    add_bb(entry_bb)
+    lines.append('}')
+
+    dot = subprocess.Popen(
+        ['dot', '-Tpng', '-o', filename],
+        stdin=subprocess.PIPE
+    )
+    dot.communicate('\n'.join(lines))
+    assert dot.returncode == 0
