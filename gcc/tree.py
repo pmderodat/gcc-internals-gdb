@@ -232,6 +232,16 @@ class Tree(object):
 
     @property
     @primitive(tree_code.BLOCK)
+    def block_is_abstract(self):
+        return bool(self.struct['block']['abstract_flag'])
+
+    @property
+    @primitive(tree_code.BLOCK)
+    def block_abstract_origin(self):
+        return self.get_tree_field('block', 'abstract_origin')
+
+    @property
+    @primitive(tree_code.BLOCK)
     def block_vars(self):
         return self.chain_to_list(
             self.get_tree_field('block', 'vars'),
