@@ -154,6 +154,11 @@ class Tree(object):
         else:
             raise ValueError('{} have no context'.format(self.code))
 
+    @property
+    @primitive(tree_code_class.tcc_declaration)
+    def initial(self):
+        return self.get_tree_field('decl_common', 'initial')
+
     # TODO: check the "typed?" predicate just like GCC does.
     @property
     @primitive(tree_node_structure_enum.TS_TYPED)
