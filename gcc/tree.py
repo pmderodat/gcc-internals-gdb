@@ -173,7 +173,7 @@ class Tree(object):
     @property
     @primitive(tree_code_class.tcc_declaration)
     def decl_to_chain_list(self):
-        return self.chain_to_list(self, lambda x: x.chain)
+        return chain_to_list(self, lambda x: x.chain)
 
     @property
     @primitive(tree_code.TREE_LIST)
@@ -221,7 +221,7 @@ class Tree(object):
     @property
     @primitive(tree_code.BIND_EXPR)
     def bind_vars(self):
-        return self.chain_to_list(self.get_operand(0), lambda x: x.chain)
+        return chain_to_list(self.get_operand(0), lambda x: x.chain)
 
     @property
     @primitive(tree_code.BIND_EXPR)
@@ -248,7 +248,7 @@ class Tree(object):
     @property
     @primitive(tree_code.BLOCK)
     def block_vars(self):
-        return self.chain_to_list(
+        return chain_to_list(
             self.get_tree_field('block', 'vars'),
             lambda x: x.chain
         )
@@ -256,7 +256,7 @@ class Tree(object):
     @property
     @primitive(tree_code.BLOCK)
     def block_subblocks(self):
-        return self.chain_to_list(
+        return chain_to_list(
             self.get_tree_field('block', 'subblocks'),
             lambda x: x.block_chain
         )
@@ -276,7 +276,7 @@ class Tree(object):
     @property
     @primitive(tree_code_class.tcc_type)
     def type_variants(self):
-        return self.chain_to_list(
+        return chain_to_list(
             self.get_tree_field('type_common' ,'main_variant'),
             lambda x: self.get_tree_field('type_common', 'next_variant')
         )
@@ -302,7 +302,7 @@ class Tree(object):
         return self.get_tree_field('common', 'chain')
 
     def _get_values_chain(self):
-        return self.chain_to_list(
+        return chain_to_list(
             self.get_tree_field('type_non_common', 'values'),
             lambda x: x.list_chain,
             lambda x: x.list_value
@@ -311,7 +311,7 @@ class Tree(object):
     @property
     @primitive(tree_code.RECORD_TYPE, tree_code.UNION_TYPE)
     def type_fields(self):
-        return self.chain_to_list(
+        return chain_to_list(
             self.get_tree_field('type_non_common', 'values'),
             lambda x: x.chain
         )
@@ -326,7 +326,7 @@ class Tree(object):
                tree_code.UNION_TYPE,
                tree_code.QUAL_UNION_TYPE)
     def type_methods(self):
-        return self.chain_to_list(
+        return chain_to_list(
             self.get_tree_field('type_non_common', 'maxval'),
             lambda x: x.chain
         )
@@ -355,27 +355,11 @@ class Tree(object):
     @property
     @primitive(tree_code.STATEMENT_LIST)
     def statements(self):
-        return self.chain_to_list(
+        return chain_to_list(
             self.struct['stmt_list']['head'],
             lambda x: x['next'],
             lambda x: Tree(x['stmt'])
         )
-
-    # Various helpers
-
-    def chain_to_list(self, start, next_func, get_elt_func=None):
-        """
-        Turn a chain of tree nodes into a list.
-
-        Fetch the chain tarting at `start` and following links calling
-        next_func (`next = next_func(start)`). If `get_elt_func` is provided,
-        return elements are mapped with it.
-        """
-        result = []
-        while start:
-            result.append(get_elt_func(start) if get_elt_func else start)
-            start = next_func(start)
-        return result
 
 
 class TreePrinter(object):
