@@ -3,6 +3,8 @@ from functools import wraps
 import gdb
 import gdb.types
 
+from gcc.utils import chain_to_list
+
 
 class Enum(object):
     def __init__(self, gdb_type):
