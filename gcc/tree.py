@@ -273,6 +273,13 @@ class Tree(object):
     def block_chain(self):
         return self.get_tree_field('block', 'chain')
 
+    def block_dump(self, prefix=''):
+        print('{}block {}'.format(prefix, self))
+        for var in self.block_vars:
+            print('{}  var {}'.format(prefix, var))
+        for sb in self.block_subblocks:
+            sb.block_dump(prefix + '  ')
+
     # TYPE'S
 
     @property
