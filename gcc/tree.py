@@ -262,6 +262,20 @@ class Tree(object):
 
     @property
     @primitive(tree_code.BLOCK)
+    def block_all_vars(self):
+        """
+        Return the list of varibles in "self" and in all its subblocks.
+        """
+        result = []
+        def traverse(b):
+            result.extend(b.block_vars)
+            for sb in b.block_subblocks:
+                traverse(sb)
+        traverse(self)
+        return result
+
+    @property
+    @primitive(tree_code.BLOCK)
     def block_subblocks(self):
         return chain_to_list(
             self.get_tree_field('block', 'subblocks'),
