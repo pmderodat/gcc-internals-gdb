@@ -100,7 +100,7 @@ class Tree(object):
 
     @property
     def address(self):
-        return int(self.value.cast(gdb.lookup_type('unsigned long long')))
+        return int(self.value.cast(gdb.lookup_type('uintptr_t')))
 
     @property
     def code_class(self):
@@ -236,6 +236,11 @@ class Tree(object):
         return self.get_operand(2)
 
     # BLOCK
+
+    @property
+    @primitite(tree_code.BLOCK)
+    def block_sloc(self):
+        return self.struct['block']['locus']
 
     @property
     @primitive(tree_code.BLOCK)
