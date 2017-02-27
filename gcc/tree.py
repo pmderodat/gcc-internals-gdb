@@ -238,7 +238,7 @@ class Tree(object):
     # BLOCK
 
     @property
-    @primitite(tree_code.BLOCK)
+    @primitive(tree_code.BLOCK)
     def block_sloc(self):
         return self.struct['block']['locus']
 
