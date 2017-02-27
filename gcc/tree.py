@@ -305,9 +305,14 @@ class Tree(object):
     @primitive(tree_code_class.tcc_type)
     def type_variants(self):
         return chain_to_list(
-            self.get_tree_field('type_common' ,'main_variant'),
+            self.type_main_variant,
             lambda x: self.get_tree_field('type_common', 'next_variant')
         )
+
+    @property
+    @primitive(tree_code_class.tcc_type)
+    def type_main_variant(self):
+        return self.get_tree_field('type_common' ,'main_variant')
 
     @property
     @primitive(tree_code_class.tcc_type)
