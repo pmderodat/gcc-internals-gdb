@@ -351,6 +351,12 @@ class Tree(object):
             lambda x: x.chain
         )
 
+    @property
+    @primitive(tree_code_class.tcc_type)
+    def type_descriptive_type(self):
+        hook = gdb.parse_and_eval('lang_hooks.types.descriptive_type')
+        return Tree(hook.dereference()(self.value) if hook else None)
+
     # DECL'S
 
     @property
