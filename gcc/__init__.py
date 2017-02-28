@@ -26,6 +26,7 @@ def handle_new_objfile(event):
     import gcc.cfg
     from gcc.cfg import BasicBlock, BasicBlockPrinter, Edge, EdgePrinter
     from gcc.commands import Pregset
+    from gcc.die import Attribute, DIE
     import gcc.ira
     from gcc.ira import (
         IRAAllocno, IRAAllocnoPrinter, IRAObject, IRAMove, IRAMovePrinter,
@@ -38,7 +39,7 @@ def handle_new_objfile(event):
     import gcc.utils
 
     value_wrappers = [
-        BasicBlock, Edge,
+        Attribute, BasicBlock, DIE, Edge,
         IRAAllocno, IRAObject, IRAMove, IRALoopTreeNode,
         Tree
     ]
