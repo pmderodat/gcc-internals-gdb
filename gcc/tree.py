@@ -374,6 +374,11 @@ class Tree(object):
     def decl_initial(self):
         return self.get_tree_field('decl_common', 'initial')
 
+    @property
+    @primitive(tree_code_class.tcc_declaration)
+    def decl_ignored_p(self):
+        return int(self.struct['decl_common']['ignored_flag'])
+
     # FUNCTION_DECL
 
     @property
