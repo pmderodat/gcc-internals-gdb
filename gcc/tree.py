@@ -369,6 +369,11 @@ class Tree(object):
     def decl_original_type(self):
         return self.get_tree_field('decl_non_common', 'result')
 
+    @property
+    @primitive(tree_code_class.tcc_declaration)
+    def decl_initial(self):
+        return self.get_tree_field('decl_common', 'initial')
+
     # FUNCTION_DECL
 
     @property
