@@ -3,20 +3,7 @@ from functools import wraps
 import gdb
 import gdb.types
 
-from gcc.utils import chain_to_list
-
-
-class Enum(object):
-    def __init__(self, gdb_type):
-        self.gdb_type = gdb_type
-        self.name_to_value = gdb.types.make_enum_dict(gdb_type)
-        self.value_to_name = {
-            value: name
-            for name, value in self.name_to_value.items()
-        }
-
-    def __getattr__(self, name):
-        return gdb.Value(self.name_to_value[name]).cast(self.gdb_type)
+from gcc.utils import Enum, chain_to_list
 
 
 tree_code_class = Enum(gdb.lookup_type('enum tree_code_class'))

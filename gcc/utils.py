@@ -38,3 +38,16 @@ def fmt_list(lst):
 
 def ptr_to_int(value):
     return int(value.cast(gdb.lookup_type('intptr_t')))
+
+
+class Enum(object):
+    def __init__(self, gdb_type):
+        self.gdb_type = gdb_type
+        self.name_to_value = gdb.types.make_enum_dict(gdb_type)
+        self.value_to_name = {
+            value: name
+            for name, value in self.name_to_value.items()
+        }
+
+    def __getattr__(self, name):
+        return gdb.Value(self.name_to_value[name]).cast(self.gdb_type)
