@@ -365,6 +365,11 @@ class Tree(object):
         return self.get_tree_field('decl_minimal', 'name')
 
     @property
+    @primitive(tree_code_class.tcc_declaration)
+    def decl_abstract_origin(self):
+        return self.get_tree_field('decl_common', 'abstract_origin')
+
+    @property
     @primitive(tree_code.TYPE_DECL)
     def decl_original_type(self):
         return self.get_tree_field('decl_non_common', 'result')
