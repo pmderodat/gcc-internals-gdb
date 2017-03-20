@@ -3,7 +3,7 @@ from functools import wraps
 import gdb
 import gdb.types
 
-from gcc.utils import Enum, chain_to_list
+from gcc.utils import Enum, chain_to_list, is_string
 
 
 tree_code_class = Enum(gdb.lookup_type('enum tree_code_class'))
@@ -65,7 +65,7 @@ class Tree(object):
         is converted into a gdb.Value thanks to gdb.parse_and_eval) or an
         integer (in which case it is casted into a tree).
         """
-        if isinstance(value, basestring):
+        if is_string(value):
             value = gdb.parse_and_eval(value)
         elif isinstance(value, int):
             value = gdb.Value(value).cast(gdb.lookup_type('tree'))

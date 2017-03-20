@@ -1,3 +1,5 @@
+import sys
+
 import gdb
 
 
@@ -51,3 +53,13 @@ class Enum(object):
 
     def __getattr__(self, name):
         return gdb.Value(self.name_to_value[name]).cast(self.gdb_type)
+
+
+def is_string(value):
+    """
+    Python 2/3 compatibility helper. Return whether `value` is a string.
+    """
+    if sys.version_info.major <= 2:
+        return isinstance(value, basestring)
+    else:
+        return isinstance(value, str)
