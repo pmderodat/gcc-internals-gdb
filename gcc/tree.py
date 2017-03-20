@@ -78,6 +78,9 @@ class Tree(object):
     def __nonzero__(self):
         return bool(self.value)
 
+    def __bool__(self):
+        return self.__nonzero__()
+
     @property
     def struct(self):
         return self.value.dereference()
