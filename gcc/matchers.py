@@ -7,7 +7,7 @@ class MatchTree(gdb.Function):
     """
     Return whether a GCC tree matches expected tree code and name.
 
-    For instance: matchtree(RECORD_TYPE, "foobar")
+    For instance: matchtree(node, RECORD_TYPE, "foobar")
     """
 
     def __init__(self, name='matchtree'):
