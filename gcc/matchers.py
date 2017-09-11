@@ -16,7 +16,7 @@ class MatchTree(gdb.Function):
     def invoke(self, value, code, name):
         name = name.string() if name else None
         tree = Tree(value)
-        if not tree or code != code:
+        if not tree or tree.code != code:
             return False
 
         if not name:
