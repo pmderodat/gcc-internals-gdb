@@ -192,6 +192,7 @@ class Attribute(object):
 
 class DIEPrinter(object):
     name = 'dw_die_ref'
+    pointed_name = 'die_struct'
 
     def __init__(self, value):
         self.value = value

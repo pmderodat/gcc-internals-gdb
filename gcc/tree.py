@@ -409,6 +409,7 @@ class Tree(object):
 
 class TreePrinter(object):
     name = 'tree'
+    pointed_name = 'tree_node'
 
     def __init__(self, value):
         self.value = value

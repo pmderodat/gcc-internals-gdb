@@ -7,7 +7,16 @@ class GDBSubprinter(gdb.printing.SubPrettyPrinter):
         super(GDBSubprinter, self).__init__(cls.name)
 
     def matches(self, val):
-        return val.type.name == self.cls.name
+        if val.type.name == self.cls.name:
+            return True
+
+        pointed_name = getattr(self.cls, 'pointed_name', None)
+        if (pointed_name is not None and
+                val.type.code == gdb.TYPE_CODE_PTR and
+                val.type.target().name == pointed_name):
+            return True
+
+        return False
 
     def instantiate(self, val):
         return self.cls(val)
