@@ -76,16 +76,23 @@ class DIE(object):
         return DIE(self.struct['die_sib'])
 
     @property
+    def siblings(self):
+        result = [self]
+        while True:
+            sib = result[-1].sibling
+
+            # Sibling lists are supposed to be circular lists, but it can
+            # happen from time to time, for instance in the middle of the
+            # type pruning pass, that we temporarily have a NULL-terminated
+            # list: handle that for debug convenience.
+            if not sib or sib == self:
+                return result
+            result.append(sib)
+
+    @property
     def children(self):
-        result = []
-        c = self.child
-        if c:
-            while True:
-                c = c.sibling
-                result.append(c)
-                if c == self.child:
-                    break
-        return result
+        first_child = self.child
+        return self.child.siblings if self.child else []
 
     @property
     def attributes(self):
