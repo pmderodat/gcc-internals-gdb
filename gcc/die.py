@@ -117,6 +117,23 @@ class DIE(object):
                 for i in range(num)]
 
     @property
+    def iter_tree(self):
+        """
+        Yield all DIEs in self's subtree.
+        """
+        yield self
+        for c in self.children:
+            for ci in c.iter_tree:
+                yield ci
+
+    def find(self, predicate):
+        """
+        Return the list of all DIEs in the `self` subtree for which the
+        `predicate` function returns true.
+        """
+        return [d for d in self.iter_tree if predicate(d)]
+
+    @property
     def name(self):
         """
         If this DIE has a DW_AT_name attribute, return its string value.
