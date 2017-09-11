@@ -145,6 +145,9 @@ class DIE(object):
             return None
 
     def __repr__(self):
+        if not self.value:
+            return 'NULL'
+
         name = self.name
         name_repr = '{} '.format(name) if name else ''
         return '<{} {}{}>'.format(self.tag, name_repr, hex(self.address))
