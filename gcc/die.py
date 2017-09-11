@@ -95,6 +95,18 @@ class DIE(object):
         return self.child.siblings if self.child else []
 
     @property
+    def parents(self):
+        """
+        Return the whole parent chain starting from `self` (included).
+        """
+        p = self
+        result = []
+        while p:
+            result.append(p)
+            p = p.parent
+        return result
+
+    @property
     def attributes(self):
         vec = self.struct['die_attr']
         if not ptr_to_int(vec):
