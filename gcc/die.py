@@ -156,3 +156,13 @@ class Attribute(object):
         except NotImplementedError:
             val = self.val_class
         return '<{} {}>'.format(self.attr, val)
+
+
+class DIEPrinter(object):
+    name = 'dw_die_ref'
+
+    def __init__(self, value):
+        self.value = value
+
+    def to_string(self):
+        return str(DIE(self.value))

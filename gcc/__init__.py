@@ -26,7 +26,7 @@ def handle_new_objfile(event):
     import gcc.cfg
     from gcc.cfg import BasicBlock, BasicBlockPrinter, Edge, EdgePrinter
     from gcc.commands import Pregset
-    from gcc.die import Attribute, DIE
+    from gcc.die import Attribute, DIE, DIEPrinter
     import gcc.ira
     from gcc.ira import (
         IRAAllocno, IRAAllocnoPrinter, IRAObject, IRAMove, IRAMovePrinter,
@@ -62,6 +62,7 @@ def handle_new_objfile(event):
 
     printers = GDBPrettyPrinters('gcc')
     printers.append(BasicBlockPrinter)
+    printers.append(DIEPrinter)
     printers.append(EdgePrinter)
     # TODO: these don't work right now because of input type matching.
     # printers.append(IRAAllocnoPrinter)
