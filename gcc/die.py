@@ -1,7 +1,7 @@
 import gdb
 import gdb.types
 
-from gcc.utils import Enum, ptr_to_int
+from gcc.utils import Enum, is_string, ptr_to_int
 
 
 dwarf_attribute = Enum(gdb.lookup_type('enum dwarf_attribute'))
@@ -15,7 +15,7 @@ class DIE(object):
 
 
     def __init__(self, value):
-        if isinstance(value, basestring):
+        if is_string(value):
             value = gdb.parse_and_eval(value)
         elif isinstance(value, int):
             value = gdb.Value(value).caste(gdb.lookup_type('dw_die_ref'))
