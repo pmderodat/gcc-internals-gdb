@@ -392,6 +392,14 @@ class Tree(object):
 
     @property
     @primitive(tree_code.FUNCTION_DECL)
+    def arguments(self):
+        return chain_to_list(
+            self.get_tree_field('function_decl', 'arguments'),
+            lambda x: x.chain
+        )
+
+    @property
+    @primitive(tree_code.FUNCTION_DECL)
     def saved_tree(self):
         return self.get_tree_field('decl_non_common', 'saved_tree')
 
